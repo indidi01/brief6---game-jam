@@ -1,0 +1,73 @@
+body {
+    background-color: #7fb71e;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    cursor: none;
+
+
+}
+
+.info-panel {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.grid {
+    width: 606px; /* 3*200px pour les trous + 2*3px pour les bordures */
+    height: 606px;
+    margin: 0 auto;
+    display: grid;
+    /* On crée une grille de 3 colonnes et 3 lignes */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    /* border: 3px solid #033e09; */
+}
+
+.hole {
+    width: 200px;
+    height: 200px;
+    /* border: 3px solid #333; */
+    background-image: url('./img/trou.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* La classe "mole" sera ajoutée par TypeScript quand une taupe apparaît */
+.mole {
+    background-image: url('./img/taupe.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* z-index: 0; */
+}
+
+#start-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+/* 2. Style de notre curseur personnalisé */
+#custom-cursor {
+    width: 6rem;
+    height: 6rem;
+    background-image: url(./img/marteau.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 25%;
+    transform: translate(-20%,-50%);
+
+    position: absolute;
+    /* z-index: 10; */
+
+    /* ASTUCE CRUCIALE : pour que le curseur ne bloque pas les clics ! */
+    pointer-events: none;
+}
+
+#custom-cursor.clicked {
+    transform: rotatez(-45deg) translatey(-70%) translatex(50%);
+    transition: transform 0.05s ease-in-out;
+}

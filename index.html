@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu du Tape-Taupe</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+
+
+    <h1>Tape-Taupe !</h1>
+
+    <div class="info-panel">
+        <h2>Score: <span id="score">0</span></h2>
+        <h2>Temps restant: <span id="time-left">60</span></h2>
+    </div>
+
+    <button id="start-button">Démarrer / Rejouer</button>
+
+    <div class="grid">
+        <!-- Nous allons créer une grille de 9 trous -->
+        <div class="hole" id="1"></div>
+        <div class="hole" id="2"></div>
+        <div class="hole" id="3"></div>
+        <div class="hole" id="4"></div>
+        <div class="hole" id="5"></div>
+        <div class="hole" id="6"></div>
+        <div class="hole" id="7"></div>
+        <div class="hole" id="8"></div>
+        <div class="hole" id="9"></div>
+    </div>
+
+    <script src="./dist/script.js"></script>
+</body>
+</html>
