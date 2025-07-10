@@ -1,52 +1,203 @@
-///souris///
-//curseur
-const customCursor = document.getElementById("custom-cursor") as HTMLDivElement;
+const gameConfig = {
+    gameDuration: 60,
+    moleSpeed: 800,
+    countdownSpeed: 1000,
+};
 
-// position curseur
-window.addEventListener("mousemove", (Event: MouseEvent) => {
-    customCursor.style.left = Event.clientX + "px";
-    customCursor.style.top = Event.clientY + "px";
-});
+class Game {
+    //variables invisibles
+    private score: number;
+    private timeLeft: number;
+    private isGameActive: boolean;
+    private moleTimerId: number | null;
+    private countdownTimerId: number | null;
 
-// animation curseur
-window.addEventListener("mousedown", () => {
-    customCursor.classList.add("clicked");
-});
-window.addEventListener("mouseup", () => {
-    customCursor.classList.remove("clicked");
-});
+    //variables visibles
+    private scoreBoard: HTMLElement | null;
+    private timeLeftDisplay: HTMLElement | null;
+    private startButton: HTMLElement | null;
+    private holes: NodeListOf<HTMLDivElement>;
 
-///animation des taupes///
-// selection trous + taupes
-const holes = document.querySelectorAll(".hole") as NodeListOf<HTMLDivElement>;
-const startButton = document.getElementById(
-    "start-button"
-) as HTMLButtonElement;
-const speed = 1000;
+    constructor() {
+        //variables
+        this.score = 0;
+        this.timeLeft = gameConfig.gameDuration;
+        this.isGameActive = false;
+        this.moleTimerId = null;
+        this.countdownTimerId = null;
 
-let moleAnimationId: number | null = null;
+        //DOM
+        this.scoreBoard = document.getElementById("score");
+        this.timeLeftDisplay = document.getElementById("time-left");
+        this.startButton = document.getElementById("start-button");
+        this.holes = document.querySelectorAll(".hole");
 
-function showRandomMole() {
-    //reinit
-    holes.forEach((hole) => {
-        hole.classList.remove("mole");
-    });
+        //gestion des erreurs
+        if (!this.scoreBoard || !this.timeLeftDisplay || !this.startButton) {
+            throw new Error("Rechagez la page, et vérifiez vos extentions");
+        }
 
-    //choisi le trou
-    const randomIndex = Math.floor(Math.random() * holes.length);
-    const randomHole = holes[randomIndex];
-
-    randomHole.classList.add("mole");
-}
-
-//demarrage
-function startGame() {
-    if (moleAnimationId) {
-        clearInterval(moleAnimationId);
+        //si clique sur start game, alors ont écoute les cliques sur chaques trous
+        this.startButton.addEventListener("click", this.startGame.bind(this));
+        this.holes.forEach((hole) =>
+            hole.addEventListener("click", this.whack.bind(this, hole))
+        );
     }
 
-    moleAnimationId = setInterval(showRandomMole, speed);
+    public startGame(): void {
+        //init
+        this.score = 0;
+        this.timeLeft = gameConfig.gameDuration;
+        this.isGameActive = true;
+
+        if (this.scoreBoard) this.scoreBoard.textContent = this.score.toString();
+        if (this.timeLeftDisplay)
+            this.timeLeftDisplay.textContent = this.timeLeft.toString();
+
+        //nettoyage
+        if (this.moleTimerId) clearInterval(this.moleTimerId);
+        if (this.countdownTimerId) clearInterval(this.countdownTimerId);
+
+        //timers
+        this.moleTimerId = setInterval(
+            this.showRandomMole.bind(this),
+            gameConfig.moleSpeed
+        );
+        this.countdownTimerId = setInterval(
+            this.countDown.bind(this),
+            gameConfig.countdownSpeed
+        );
+    }
+
+    private showRandomMole(): void {
+        this.holes.forEach((hole) => hole.classList.remove("mole"));
+        const randomHole =
+            this.holes[Math.floor(Math.random() * this.holes.length)];
+        randomHole.classList.add("mole");
+    }
+
+    private whack(hole: HTMLDivElement): void {
+        if (!this.isGameActive || !hole.classList.contains("mole")) {
+            return;
+        }
+
+        this.score++;
+        if (this.scoreBoard) this.scoreBoard.textContent = this.score.toString();
+        hole.classList.remove("mole");
+    }
+
+    private countDown(): void {
+        this.timeLeft--;
+        if (this.timeLeftDisplay) this.timeLeftDisplay.textContent = this.timeLeft.toString();
+
+        if (this.timeLeft <= 0) {
+            this.endGame();
+        }
+    }
+
+    private endGame(): void {
+        if (this.countdownTimerId) clearInterval(this.countdownTimerId);
+        if (this.moleTimerId) clearInterval(this.moleTimerId);
+        this.isGameActive = false;
+
+        alert("Partie terminée ! Votre score : " + this.score);
+        this.holes.forEach((hole) => hole.classList.remove("mole"));
+    }
 }
 
-startButton.addEventListener("click", startGame);
+//lancement
+const tapeTaupeGame = new Game();
 
+//souris
+const customCursor: HTMLElement | null =
+    document.getElementById("custom-cursor");
+
+if (customCursor) {
+    window.addEventListener("mousemove", (Event: MouseEvent) => {
+        customCursor.style.left = Event.clientX + "px";
+        customCursor.style.top = Event.clientY + "px";
+    });
+
+    window.addEventListener("mousedown", () => {
+        customCursor.classList.add("clicked");
+        setTimeout(() => {
+            customCursor.classList.remove("clicked");
+        }, 100);
+    });
+}
+
+
+
+// let score: number = 0;
+// let timeLeft: number = 60;
+// let hitPosition: string | null = null;
+// let gameTimerId: number | null = null;
+// let moleTimerId: number | null = null;
+// let countdownTimerId: number | null = null;
+// let isGameActive: boolean = false;
+
+// const scoreBoard: HTMLElement | null = document.getElementById("score");
+// const timeLeftDisplay: HTMLElement | null = document.getElementById("time-left");
+// const startButton: HTMLElement | null = document.getElementById("custom-cursor");
+
+// ///souris///
+// //curseur
+// const customCursor: HTMLElement | null =
+//   document.getElementById("custom-cursor");
+
+// // position curseur
+// if (customCursor) {
+//   window.addEventListener("mousemove", (Event: MouseEvent) => {
+//     customCursor.style.left = Event.clientX + "px";
+//     customCursor.style.top = Event.clientY + "px";
+//   });
+
+//   // animation curseur
+
+//   window.addEventListener("mousedown", () => {
+//     customCursor.classList.add("clicked");
+//     setTimeout(() => {
+//       customCursor.classList.remove("clicked");
+//     }, 100);
+//   });
+// }
+
+// ///animation des taupes///
+// // selection trous + taupes
+// const holes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".hole");
+// const startButton: HTMLElement | null = document.getElementById("start-button");
+// const speed = 1000;
+
+// let moleAnimationId: number | null = null;
+
+// function showRandomMole() {
+//   //reinit
+//   holes.forEach((hole) => {
+//     hole.classList.remove("mole");
+//   });
+
+//   //choisi le trou
+//   const randomIndex = Math.floor(Math.random() * holes.length);
+//   const randomHole = holes[randomIndex];
+
+//   randomHole.classList.add("mole");
+// }
+
+// //demarrage
+// function startGame() {
+//   if (moleAnimationId) {
+//     clearInterval(moleAnimationId);
+//   }
+
+//   moleAnimationId = setInterval(showRandomMole, speed);
+// }
+
+// startButton.addEventListener("click", startGame);
+
+// holes.forEach((hole) => {
+//   hole.addEventListener("click", () => {
+//     if (hole.classList.contains("mole")) {
+//       hole.classList.remove("mole");
+//     }
+//   });
+// });
