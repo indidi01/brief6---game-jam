@@ -2,6 +2,7 @@ const gameConfig = {
     gameDuration: 60,
     moleSpeed: 800,
     countdownSpeed: 1000,
+    hitStunDuration: 1000,
 };
 
 class Game {
@@ -17,6 +18,7 @@ class Game {
     private timeLeftDisplay: HTMLElement | null;
     private startButton: HTMLElement | null;
     private holes: NodeListOf<HTMLDivElement>;
+    private stunnedMole: Set<string>;
 
     constructor() {
         //variables
@@ -25,6 +27,7 @@ class Game {
         this.isGameActive = false;
         this.moleTimerId = null;
         this.countdownTimerId = null;
+        this.stunnedMole = new Set();
 
         //DOM
         this.scoreBoard = document.getElementById("score");
@@ -71,9 +74,13 @@ class Game {
 
     private showRandomMole(): void {
         this.holes.forEach((hole) => hole.classList.remove("mole"));
-        const randomHole =
-            this.holes[Math.floor(Math.random() * this.holes.length)];
-        randomHole.classList.add("mole");
+
+        const avaibleHoles = Array.from(this.holes).filter(hole => !this.stunnedMole.has(hole.id)); 
+
+        if (avaibleHoles.length > 0) {
+            const randomHole = avaibleHoles[Math.floor(Math.random() * avaibleHoles.length)];
+            randomHole.classList.add("mole");
+        }
     }
 
     private whack(hole: HTMLDivElement): void {
@@ -84,6 +91,17 @@ class Game {
         this.score++;
         if (this.scoreBoard) this.scoreBoard.textContent = this.score.toString();
         hole.classList.remove("mole");
+        hole.classList.add("mole-hit");
+        this.stunnedMole.add(hole.id);
+
+        setTimeout(() => {
+            hole.classList.remove("mole-hit");
+            this.stunnedMole.delete(hole.id);
+        }, gameConfig.hitStunDuration);
+
+        if (this.moleTimerId) clearInterval(this.moleTimerId);
+        this.moleTimerId = setInterval(this.showRandomMole.bind(this), gameConfig.moleSpeed);
+        this.showRandomMole();
     }
 
     private countDown(): void {
