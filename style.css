@@ -1,41 +1,65 @@
+@font-face {
+  font-family: 'retro';
+  src: url(./font/Retro\ Gaming.ttf);
+}
+
+:root {
+  --main-font: 'retro', sans-serif;
+  --header-bg: #72431f;
+  --header-border: #1a1a1a;
+  --text-color: white;
+}
+  
 body {
   background-image: url("./img/backround.png");
   background-position: center;
-  background-size: 100%;
-  /* background-repeat: no-repeat; */
-  font-family: Arial, sans-serif;
+  background-size: cover;
   text-align: center;
-  cursor: none;
   margin: 0%;
 
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   align-items: center;
+  cursor: none;
+  overflow: hidden;
 }
 
 .game-header {
-  width: 100%;
+  font-family: var(--main-font);
+  background: #72431f;
+  border: 5px solid var(--header-border);
+  width: 90%;
+  max-width: 600px;
+  margin: 1% 0 0 0;
+  color: var(--text-color);
+  box-sizing: border-box;
   text-align: center;
-  padding: 20px 0;
+}
+
+.game-header h1 {
+  font-size: 1.5rem;
+  margin: 2% 0 0 0;
 }
 
 .info-panel {
   display: flex;
   justify-content: space-around;
+  font-size: 0.75rem;
   max-width: 500px;
   margin: 10px auto;
 }
 
 #start-button {
+  font-size: small;
+  font-family: 'retro';
   padding: 10px 20px;
-  font-size: 1.2rem;
-  cursor: pointer;
+  font-size: 1rem;
+  cursor: none;
   margin-bottom: 20px;
   border: 2px solid white;
   background-color: var(--border-color);
-  color: white;
-  border-radius: 8px;
+  color: var(--text-color);
   transition: transform 0.2s;
 }
 
@@ -49,22 +73,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 20px;
+  padding-bottom: 2%;
 }
 
 .grid {
-  width: 90vw;
+  width: 65vw;
   max-width: 600px;
   aspect-ratio: 1/1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 10px;
-  /* border: 3px solid #033e09; */
 }
 
 .hole {
-  /* border: 3px solid #333; */
   background-image: url("./img/trou.png");
   background-size: contain;
   background-position: center;
@@ -73,48 +95,65 @@ body {
 
 .mole {
   background-image: url("./img/taupe.png");
-  /* background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat; */
-  /* z-index: 0; */
 }
 
 .mole-hit {
   background-image: url("./img/taupetouchee.png");
-  /* background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat; */
 }
 
-#custom-cursor {
+
+#custom-cursor.clicked {
   width: 6rem;
   height: 6rem;
   background-image: url(./img/marteau.png);
   background-size: contain;
   background-repeat: no-repeat;
-  /* border-radius: 25%; */
-  transform: translate(-25%, -50%) rotatez(-45deg);
   position: absolute;
-  /* z-index: 10; */
-
   pointer-events: none;
+  transform: rotatez(-90deg) translate(75%, -25%) scale(0.75);
+  /* transition: transform 0.05s ease-in-out; */
 }
 
-#custom-cursor.clicked {
-  transform: rotatez(-90deg) translatey(-25%) translatex(100%) scale(1.5);
-  /* transition: transform 0.05s ease-in-out; */
+@media (pointer: fine) {
+  #custom-cursor {
+    width: 6rem;
+    height: 6rem;
+    background-image: url(./img/marteau.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: translate(-25%, -50%) rotatez(-45deg);
+    position: absolute;
+    z-index: 10;
+
+    pointer-events: none;
+  }
+
+  #custom-cursor.clicked {
+    transform: rotatez(-90deg) translatey(-25%) translatex(100%) scale(1.5);
+    /* transition: transform 0.05s ease-in-out; */
+  }
 }
 
 @media (max-width: 600px) {
   h1 {
-    font-size: 2em;
+    font-size: 1rem;
   }
 
   h2 {
-    font-size: 1em;
+    font-size: 1rem;
   }
 
   .grid {
+    width: 80%;
     gap: 5px;
+  }
+
+  #start-button {
+    margin: 0 1rem 1rem 1rem;
+    padding: 0.5rem 0.25rem;
+  }
+
+  body {
+    background-size: 160%;
   }
 }

@@ -145,7 +145,7 @@ if (customCursor) {
 }
 
 
-
+////BROUILLON TS en logique non objet
 // let score: number = 0;
 // let timeLeft: number = 60;
 // let hitPosition: string | null = null;
